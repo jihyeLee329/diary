@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, useMemo, useCallback, useReducer } from 'react';
+import React, { useEffect, useRef, useMemo, useCallback, useReducer } from 'react';
 import './App.css';
+import Body from './Diary/Body';
 // import Editor from './Diary/Editor';
 // import List from './Diary/List';
 import DiaryEditor from './DiaryEditor';
@@ -27,7 +28,7 @@ const reducer = (state, action) => {
       // edit dispatch 함수가 실행되면, action 으로 targetId 랑 newContent 가 전달되었다. 
       // 기존의 state에서 map 함수를 실행해서, action으로 전달받은 targetId 랑 일치하면, 
       // 기존 각각의 it 에서 content만 새로운 content로 수정하고, 아니면 기존 it 그대로 전달.
-      return state.map(it=> it.id === action.targetId ? a
+      return state.map(it=> it.id === action.targetId ? 
         {...it, content:action.newContent} : it)
     }
     default: 
@@ -35,6 +36,10 @@ const reducer = (state, action) => {
   }
 }
 
+// data = diaryState 공급용 context
+export const DiaryStateCotext = React.createContext();
+// dispatch 공급용 context
+export const DiaryDispatchContext = React.createContext();
 function App() {
   const dataId = useRef(0)
   // const [data, setData] = useState([])
@@ -102,6 +107,10 @@ function App() {
     // )
   }, [])
 
+  const memoizedDispatches = useMemo(()=> {
+    return {onCreate, onRemove, onEdit}
+  }, [])
+
   //useMemo로 감싸버리면 useMemo 안에 있는 함수가 실행되고, return 되는건 값이다 .
   //그래서 더이상 함수가 아니라 값임. 함수로 쓰면 안됨 
   const getDiaryAnalysis = useMemo(() => {
@@ -114,51 +123,20 @@ function App() {
   const {goodCount, badCount, goodRatio} = getDiaryAnalysis;
 
 
-
-  // const list = [
-  //   {
-  //     title:'2023',
-  //     content:'2023년 입니다',
-  //     emotion:1,
-  //   },
-  //   {
-  //     title:'계모년',
-  //     content:'새해 첫 출 근!! ',
-  //     emotion:3,
-  //   },
-  //   {
-  //     title:'1월 2일',
-  //     content:'곧 신규플젝 드러감,,',
-  //     emotion:1,
-  //   }
-  // ]
-
-  // const [item, setItem] = useState(list) 
-
-  // function sbmitItem(sb){
-  //   setItem({
-  //     sb,
-  //     ...item
-  //   })
-  // }
-
-  // const [createDiary, setCreateDiary] = useState(list);
-
-  // function newDiary(newItem){
-  //   setCreateDiary([newItem, ...createDiary])
-  // }
   return (
-    <div className="App">
-      {/* <Editor newDiary={newDiary} sbmitItem={sbmitItem}/>
-      <List list={createDiary}/> */}
-      {/* <Editor /> */}
-      <DiaryEditor onCreate={onCreate}/>
-      <div>전체 일기 : {data.length}</div>
-      <div>기분 좋은 일기 개수 : {goodCount}</div>
-      <div>기분 나쁜 일기 개수 : {badCount}</div>
-      <div>기분 좋은 일기 비율 : {goodRatio}</div>
-      <DiaryList diaryList={data} onRemove={onRemove} onEdit={onEdit} />
-    </div>
+    <Body />
+    // <DiaryStateCotext.Provider value={data}>
+    //   <DiaryDispatchContext.Provider value={memoizedDispatches}>
+    //     <div className="App">
+    //       <DiaryEditor/>
+    //       <div>전체 일기 : {data.length}</div>
+    //       <div>기분 좋은 일기 개수 : {goodCount}</div>
+    //       <div>기분 나쁜 일기 개수 : {badCount}</div>
+    //       <div>기분 좋은 일기 비율 : {goodRatio}</div>
+    //       <DiaryList/>
+    //     </div>
+    //   </DiaryDispatchContext.Provider>
+    // </DiaryStateCotext.Provider>
   );
 }
 

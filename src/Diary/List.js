@@ -17,12 +17,13 @@ const ListWrapper = styled.div`
 `
 
 
-export default function List({list}){
+export default function List({list, deleteDiary, editDiary}){
+  console.log(list)
   return(
     <ListWrapper>
       <h2>일기 리스트</h2>
-      {list.map((i, idx) => (
-        <Item item={i} key={idx}/>
+      {list.map((i) => (
+        <Item item={i} key={i.id} deleteDiary={deleteDiary} editDiary={editDiary}/>
       ))}
     </ListWrapper>
 

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 const EditorForm = styled.div`
   max-width:800px;
@@ -37,22 +37,28 @@ const EditorForm = styled.div`
   `;
 
 
-export default function Editor({newDiary}){
+function Editor({newDiary}){
   const [data, setData] = useState({
     title: "",
     content: "",
-    emotion: 1
+    emotion: 1,
   })
 
   function handleText(e){
     setData({
       ...data, 
-      [e.currentTarget.name] : e.currentTarget.value
+      [e.currentTarget.name] : e.currentTarget.name === 'emotion' ? Number(e.currentTarget.value) : e.currentTarget.value,
     })
   }
 
   function submit(){
+    console.log(data)
     newDiary(data)
+    setData({
+      title: "",
+      content: "",
+      emotion: 1,
+    })
   }
 
   return(
@@ -81,3 +87,5 @@ export default function Editor({newDiary}){
   )
 
 }
+
+export default React.memo(Editor);
